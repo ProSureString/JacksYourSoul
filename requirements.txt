@@ -1,0 +1,5 @@
+discord.py
+flask
+requests
+aiohttp
+sqlite3
