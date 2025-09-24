@@ -1,1 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device width">
+        <title>Forklift Login</title>
+        <style>
+            * { margin: 0; padding: 0; box-sizing: border-box;}
 
+            body {
+                font-family: 'Courier New', monospace;
+                background: linear-gradient(135deg, #1e1e2e, #151515);
+                color: #00ff88;
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .login-box {
+                background: rgba(0, 0, 0, 0.8);
+                border: 2px solid #00ff88;
+                border-radius: 15px;
+                padding: 3rem;
+                width: 400px;
+                box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+            }
+            h1 {
+                text-align: center;
+                margin-bottom: 2rem;
+                text-shadow: 0 0 20px #00ff88;
+            }
+            input {
+                width: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                border: 1px solid #00ff88;
+                color: #00ff88;
+                padding: 0.75rem;
+                border-radius: 5px;
+                font-family: inherit;
+                margin-bottom: 1rem;
+            }
+            button {
+                width: 100%;
+                background: #00ff88;
+                color: #000;
+                border: none;
+                padding: 0.75rem;
+                border-radius: 5px;
+                cursor: pointer;
+                font-weight: bold;
+                font-size: 1rem;
+                transition: all 0.3s;
+            }
+            button:hover {
+                background: #00ffaa;
+                box-shadow: 0 0 20px #00ffaa;
+                transform: translateY(-2px)
+            }
+            .skull {
+                text-align: center;
+                font-size: 3rem;
+                margin-bottom: 1rem;
+                animation: rotates 3s ease-in-out infinite, float 3s ease-in-out infinite;
+            }
+            @keyframes float {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
+            }
+            @keyframes rotates {
+                0%, 100% { transform: rotate(-15); }
+                50% { transform: rotate(15); }
+            } /*i wonder if this will look cool*/
+        </style>
+    </head>
+    <body>
+    <div class="login-box">
+        <div class="skull">💀</div>
+        <h1>Forklift Login</h1>
+        <form method="POST">
+            <input type="password" name="password" placeholder="pls password uwus" required>
+            <button type="submit">ACCESS SOULS</button>
+        </form>
+        <p style="text-align: center; margin-top: 1rem; opacity: 0.5;">hint: admin123 ;)</p>
+    </div>
+    </body>
+</html>

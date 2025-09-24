@@ -129,4 +129,20 @@
             }
         </style>
     </head>
+    <body>
+        <nav class="nav">
+            <div>
+                <span class="glow-text" style="font-size: 1.5rem;">⚡ FORKLIFT</span>
+            </div>
+            <div>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/souls">Souls</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </nav>
+        <div class="container">
+            <!--idk the other stuff wil replace here-->
+            {% block content %}{% endblock %}
+        </div>
+    </body>
 </html>
