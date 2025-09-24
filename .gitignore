@@ -1,0 +1,4 @@
+forklift/souls.db
+venv/*
+venv/
+__pycache__/
