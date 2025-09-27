@@ -21,6 +21,9 @@ def get_db():
     conn.row_factory = sqlite3.Row
     return conn
 
+def get_bot():
+    return bot
+
 @bot.event
 async def on_ready():
     print(f'{bot.user} is ready to reap!')

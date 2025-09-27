@@ -20,6 +20,27 @@ RANKS = {
     'J': 10, 'Q': 10, 'K': 10, 'A': 11
 }
 
+
+class BlackjackCog(commands.Cog, name="Blackjack"):
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
+        self.active_games = dict[int, BlackjackSession] = {}
+
+    def get_bot(self):
+        return self.bot
+
+    @get_bot.tree.command(name="blackjack", description="Gamble with Jack")
+    async def blackjack(self, interaction: discord.Interaction):
+        if interaction.user.id in self.active_games:
+            await interaction.response.send_message("You're already in a game, mortal...", ephemeral=True)
+            return
+        
+        await interaction.response.send_modal(BetModal(self))
+
+    async def cog_unload(self):
+        self.active_games.clear()
+        return await super().cog_unload()
+    
 class BlackjackSession:
     """state store, per blackjack game, per user"""
     def __init__(self, user_id: int, bet: int):
@@ -87,6 +108,10 @@ class BlackjackSession:
         return ("Push ( tie )", 0)
     
 class BetModal(Modal, title="Place your bet"):
+    def __init__(self, cog: BlackjackCog):
+        super().__init__()
+        self.cog = cog
+
     bet = TextInput(
         label="How many coins will you bet?",
         placeholder="e.x. 100",
@@ -121,8 +146,7 @@ class BetModal(Modal, title="Place your bet"):
 
 
         session = BlackjackSession(interaction.user.id, bet_amt)
-        cog: BlackjackCog = interaction.client.get_cog("Blackjack")
-        cog.active_games[interaction.user.id] = session
+        self.cog.active_games[interaction.user.id] = session
         embed = discord.Embed(title="🃏 Blackjack", color=0xE74C3C)
         embed.add_field(
             name="Your Hand",
@@ -136,17 +160,17 @@ class BetModal(Modal, title="Place your bet"):
         )
         embed.add_field(name="Bet", value=f"{bet_amt:,} coins", inline=False)
 
-        view = BlackjackView() #~~view,modal,session,button~~ done, imrportaed 
+        view = BlackjackView(self.cog) #~~view,modal,session,button~~ done, imrportaed 
         await interaction.response.send_message(embed=embed, view=view)
 
 class BlackjackView(View):
-    def __init__(self, timeout: float = 180):
+    def __init__(self, cog: BlackjackCog, timeout: float = 180):
         super().__init__(timeout=timeout)
+        self.cog = cog
 
     @Button(label="Hit", style=discord.ButtonStyle.primary, custom_id="bj_hit")
     async def hit(self, interaction: discord.Interaction, button: Button):
-        cog: BlackjackCog = interaction.client.get_cog("BlackjackCog")
-        session = cog.active_games.get(interaction.user.id)
+        session = self.cog.active_games.get(interaction.user.id)
         if not session or session.finished:
             await interaction.response.send_message("These(?) games reais inactive, mortal...")
             return
@@ -211,7 +235,7 @@ class BlackjackView(View):
             await interaction.response.edit_message(embed=embed, view=self)
 
             #clean up like a good boy after finishing :3
-            cog.active_games.pop(interaction.user.id, None) #no, kat, this function is cleaning up the gane by removing it from the list of active games and reducing ram usage 
+            self.cog.active_games.pop(interaction.user.id, None) #no, kat, this function is cleaning up the gane by removing it from the list of active games and reducing ram usage 
         else:
             await interaction.response.edit_message(embed=embed, view=self)
 
@@ -264,4 +288,10 @@ class BlackjackView(View):
         await interaction.response.edit_message(embed=embed, view=self)
         cog.active_games.pop(interaction.user.id, None)
 
+    async def on_timeout(self):
+        return await super().on_timeout()# do mroe later im too lazy rn i need to finish this and sleep, autocomplete says this should work
 
+
+    
+async def setup(bot: commands.Bot):
+    await bot.add_cog(BlackjackCog(bot))
