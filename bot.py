@@ -1,28 +1,59 @@
 import discord
 from discord.ext import commands
+from blackjack import BlackjackCog
 import sqlite3
 import secrets
 import aiohttp
+import asyncio
 import json
 from datetime import datetime
-from . import config
+from config import get_config
 import random
+from typing import *
+from functools import wraps
 
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 
-FORKLIFT_URL = 'http://localhost:5000'
-DB_PATH = 'forklift/souls.db'
+config = get_config()
+
 
 def get_db():
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(config.DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
 def get_bot():
     return bot
+
+async def load_cog(cog):
+    await bot.add_cog(cog(bot))
+    await bot.load_extension
+
+async def load_cogs():
+    bot.add_cog(BlackjackCog(bot))
+    await bot.tree.sync()
+
+def get_cog_choices(self) -> list[str]:
+    cog_names = list(self.bot.cogs.keys())
+    return cog_names
+
+# @decorator for checking permissions on bot.tree.command
+async def check_permissions(interaction: discord.Interaction) -> bool:
+    return interaction.user.id == config.OWNER_ID
+
+def owner_only():
+    def decorator(func):
+        @discord.app_commands.check
+        @wraps(func)
+        async def predicate(interaction: discord.Interaction):
+            return check_permissions(interaction)
+        return func
+    return decorator
+
+
 
 @bot.event
 async def on_ready():
@@ -55,7 +86,7 @@ async def register(interaction: discord.Interaction):
 
 
     #oauth of doom(for them lol)
-    oauth_url = f"{FORKLIFT_URL}/jvs/{code}"
+    oauth_url = f"{config.FORKLIFT_URL}/jvs/{code}"
 
     embed = discord.Embed(
         title="🔥 Soul Contract 🔥", 
@@ -90,7 +121,7 @@ async def refer(interaction: discord.Interaction):
     db.close()
     
     #oauth of doom(for them lol)
-    oauth_url = f"{FORKLIFT_URL}/jvs/{code}"
+    oauth_url = f"{config.FORKLIFT_URL}/jvs/{code}"
 
     embed = discord.Embed(
         title="💀 Soul Harvesting Link 💀",
@@ -125,106 +156,6 @@ async def balance(interaction: discord.Interaction):
 
     await interaction.response.send_message(embed=embed)
 
-@bot.tree.command(name="blackjack", description="Gamble with Jack")
-async def blackjack(interaction: discord.Interaction, bet: int):
-    db = get_db()
-    cursor = db.cursor()
-
-    # get user data
-    cursor.execute("SELECT * FROM souls WHERE discord_id = ?", (str(interaction.user.id),))
-    user = cursor.fetchone()
-
-    if not user:
-        await interaction.response.send_message("❌ No soul, no gambling. Use `/register`", ephemeral=True)
-        db.close()
-        return
-    
-    if bet <= 0:
-        await interaction.response.send_message("❌ Nice try, bet something real", ephemeral=True)
-        db.close()
-        return
-    
-    if bet > user['balance']:
-        await interaction.response.send_message(f"❌ You only have {user['balance']:,} coins, peasant. \nMaybe try referring other's to get some more dough ;3", ephemeral=True)
-        db.close()
-        return
-    
-
-
-    # simplified blackjack logic 
-
-    def card_value(card):
-        if card in ['J', 'Q', 'K']:
-            return 10
-        elif card == 'A':
-            return 1  # simplified, no ace adjustment
-        else:
-            return int(card)
-        
-    def calc_hand(cards):
-        total = sum(card_value(c) for c in cards)
-        aces = cards.count('A')
-        while total > 21 and aces:
-            total -= 10
-            aces -= 1
-        return total
-    
-    #CHAOS 
-    deck = [2,3,4,5,6,7,8,9,10,'J','Q','K','A'] * 4
-    random.shuffle(deck)
-
-    player_hand = [deck.pop(), deck.pop()]
-    dealer_hand = [deck.pop(), deck.pop()]
-
-    embed = discord.Embed(title="🎰 Blackjack", color=0xE74C3C)
-    embed.add_field(name="Your Hand", value=f"{player_hand} = **{calc_hand(player_hand)}**", inline=False)
-    embed.add_field(name="Dealer Shows", value=f"{dealer_hand[0]}", inline=False)
-    embed.add_field(name="Total Bet", value=f"{bet:,} coins", inline=False)
-
-    player_total = calc_hand(player_hand)
-
-    dealer_total = calc_hand(dealer_hand)
-    while dealer_total < 17:
-        dealer_hand.append(deck.pop())
-        dealer_total = calc_hand(dealer_hand)
-
-    if player_total > 21:
-        result = "BUST! You lose!"
-        winnings = -bet
-        color = 0xE74C3C
-    elif dealer_total > 21:
-        result = "Dealer BUST! You win!"
-        winnings = bet
-        color = 0x2ECC71
-    elif player_total > dealer_total:
-        result = "You win!"
-        winnings = bet
-        color = 0x2ECC71
-    elif dealer_total > player_total:
-        result = "Dealer wins!"
-        winnings = -bet
-        color = 0xE74C3C
-    else:
-        result = "Push!"
-        winnings = 0
-        color = 0xF39C12
-    
-    # update balance
-    new_balance = user['balance'] + winnings
-    cursor.execute("UPDATE souls SET balance = ? WHERE discord_id = ?", 
-                   (new_balance, str(interaction.user.id)))
-    db.commit()
-    db.close()
-    
-    embed.add_field(name="Final Hands", 
-                    value=f"You: {player_hand} = **{player_total}**\nDealer: {dealer_hand} = **{dealer_total}**", 
-                    inline=False)
-    embed.add_field(name="Result", value=result, inline=False)
-    embed.add_field(name="New Balance", value=f"{new_balance:,} coins", inline=False)
-    embed.color = color
-    
-    await interaction.response.send_message(embed=embed)
-
 @bot.tree.command(name="leaderboard", description="Top balances :3")
 async def leaderboard(interaction: discord.Interaction):
     db = get_db()
@@ -240,7 +171,7 @@ async def leaderboard(interaction: discord.Interaction):
     db.close()
 
     if not rows:
-        await interaction.response.send_message("have not harnessed anyone's soul yet...")
+        await interaction.response.send_message("I have not harnessed anyone's souls yet...")
         return
     
     embed = discord.Embed(title="👑 Richest Souls", color=0xFFD700)
@@ -253,5 +184,7 @@ async def leaderboard(interaction: discord.Interaction):
     await interaction.response.send_message(embed=embed)
 
 
+
 if __name__ == "main":
-    bot.run("away")
+    asyncio.run(load_cogs())
+    bot.run(config.DISCORD_BOT_TOKEN)
