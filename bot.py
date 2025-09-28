@@ -30,13 +30,15 @@ def get_bot():
 
 async def load_cog(cog):
     await bot.add_cog(cog(bot))
-    await bot.load_extension
 
 async def load_cogs():
     bot.add_cog(BlackjackCog(bot))
     await bot.tree.sync()
 
 def get_cog_choices(self) -> list[str]:
+    """
+    Returns a list of all cog names currently loaded into the bot
+    """
     cog_names = list(self.bot.cogs.keys())
     return cog_names
 
