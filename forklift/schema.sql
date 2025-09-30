@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS souls (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     metadata TEXT --yummy or som shish
-)
+);
 
 CREATE TABLE IF NOT EXISTS pending_registrations (
     code TEXT PRIMARY KEY,
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS pending_registrations (
     discord_name TEXT,
     referrer_id TEXT, -- who referred them, if anyone
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
+);
 
 CREATE TABLE IF NOT EXISTS transactions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS transactions (
     metadata TEXT, -- nya :3
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     FOREIGN KEY (discord_id) REFERENCES souls(discord_id)
-)
+);
 
 CREATE TABLE IF NOT EXISTS blackjack_games (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS blackjack_games (
     winnings INTEGER NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (discord_id) REFERENCES souls(discord_id)
-)
+);
 
 
 --index for speeeddyyyyy :3 br vrom
