@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS transactions (
     amount INTEGER NOT NULL,
     balance_after INTEGER NOT NULL,
     metadata TEXT, -- nya :3
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (discord_id) REFERENCES souls(discord_id)
 );
 
