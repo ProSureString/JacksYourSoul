@@ -17,7 +17,7 @@ config: Config = get_config()
 def init_db():
     """summon the database from the void"""
     conn = sqlite3.connect(config.DB_PATH)
-    with open('schema.sql', 'r') as f:
+    with open(config.SCHEMA_PATH, 'r') as f:
         conn.executescript(f.read())
     conn.close()
 

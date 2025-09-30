@@ -14,10 +14,11 @@ class Config:
     FORKLIFT_PORT = 5000
 
     # Database
-    DB_PATH = "souls.db"
+    DB_PATH = "forklift/souls.db"
+    SCHEMA_PATH = "forklift/schema.sql"
     
     # Modules
-    MODULES_PATH = "modules"
+    MODULES_PATH = "forklift/modules"
 
     # Admin password (very secure yes)
     ADMIN_PASSWORD = "admin123"
