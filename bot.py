@@ -28,8 +28,7 @@ def get_bot():
     return bot
 
 async def load_cogs():
-    bot.load_extension('blackjack') #TODO: fix dependency weirdness n stuff like make a cogs folder and cogs commands
-    await bot.tree.sync()
+    await bot.load_extension('blackjack') #TODO: fix dependency weirdness n stuff like make a cogs folder and cogs commands
 
 def get_cog_choices() -> list[str]:
     cog_names = list(bot.cogs.keys())
@@ -53,6 +52,7 @@ def owner_only():
 async def on_ready():
     print(f'{bot.user} is ready to reap!')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="souls"))
+    await load_cogs()
     await bot.tree.sync()
 
 
@@ -181,5 +181,4 @@ async def leaderboard(interaction: discord.Interaction):
 
 
 
-asyncio.run(load_cogs())
 bot.run(config.DISCORD_BOT_TOKEN)
