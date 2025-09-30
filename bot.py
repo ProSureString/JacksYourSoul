@@ -55,6 +55,8 @@ async def on_ready():
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="souls"))
     await bot.tree.sync()
 
+
+#TODO: use components v2 or something
 @bot.tree.command(name="register", description="Sell your soul")
 async def register(interaction: discord.Interaction):
     db = get_db()
