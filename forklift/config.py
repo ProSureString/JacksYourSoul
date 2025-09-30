@@ -10,7 +10,7 @@ class Config:
     # Owner user id(yours :3)
 
     # Srv config
-    FORKLIFT_HOST = "0.0.0.0"
+    FORKLIFT_HOST = "127.0.0.1"
     FORKLIFT_PORT = 5000
 
     # Database
