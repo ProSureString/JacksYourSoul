@@ -27,21 +27,14 @@ def get_db():
 def get_bot():
     return bot
 
-async def load_cog(cog):
-    await bot.add_cog(cog(bot))
-
 async def load_cogs():
     bot.load_extension('blackjack')
     await bot.tree.sync()
 
-def get_cog_choices(self) -> list[str]:
-    """
-    Returns a list of all cog names currently loaded into the bot
-    """
-    cog_names = list(self.bot.cogs.keys())
+def get_cog_choices() -> list[str]:
+    cog_names = list(bot.cogs.keys())
     return cog_names
 
-# @decorator for checking permissions on bot.tree.command
 async def check_permissions(interaction: discord.Interaction) -> bool:
     return interaction.user.id == config.OWNER_ID
 
