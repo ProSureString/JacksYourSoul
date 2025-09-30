@@ -28,7 +28,7 @@ def get_bot():
     return bot
 
 async def load_cogs():
-    bot.load_extension('blackjack')
+    bot.load_extension('blackjack') #TODO: fix dependency weirdness n stuff like make a cogs folder and cogs commands
     await bot.tree.sync()
 
 def get_cog_choices() -> list[str]:
