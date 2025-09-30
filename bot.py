@@ -1,13 +1,12 @@
 import discord
 from discord.ext import commands
-from blackjack import BlackjackCog
 import sqlite3
 import secrets
 import aiohttp
 import asyncio
 import json
 from datetime import datetime
-from config import get_config
+from forklift.config import get_config
 import random
 from typing import *
 from functools import wraps
@@ -21,7 +20,7 @@ config = get_config()
 
 
 def get_db():
-    conn = sqlite3.connect(config.DB_PATH)
+    conn = sqlite3.connect("forklift/" + config.DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -32,7 +31,7 @@ async def load_cog(cog):
     await bot.add_cog(cog(bot))
 
 async def load_cogs():
-    bot.add_cog(BlackjackCog(bot))
+    bot.load_extension('blackjack')
     await bot.tree.sync()
 
 def get_cog_choices(self) -> list[str]:
@@ -187,6 +186,5 @@ async def leaderboard(interaction: discord.Interaction):
 
 
 
-if __name__ == "main":
-    asyncio.run(load_cogs())
-    bot.run(config.DISCORD_BOT_TOKEN)
+asyncio.run(load_cogs())
+bot.run(config.DISCORD_BOT_TOKEN)

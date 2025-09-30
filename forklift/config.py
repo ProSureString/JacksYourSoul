@@ -5,18 +5,19 @@ class Config:
     DISCORD_CLIENT_ID = "YOUR_CLIENT_ID"
     DISCORD_CLIENT_SECRET = "YOUR_CLIENT_SECRET"
     DISCORD_BOT_TOKEN = "YOUR_CLIENT_TOKEN"
+    DISCORD_API_URL = "https://discord.com/api/v10"
     DISCORD_OWNER_ID = 6942012348279560
     # Owner user id(yours :3)
 
-
     # Srv config
-    FORKLIFT_HOST = "localhost"
+    FORKLIFT_HOST = "0.0.0.0"
     FORKLIFT_PORT = 5000
 
-
     # Database
-    DB_PATH = "forklift/souls.db"
-
+    DB_PATH = "souls.db"
+    
+    # Modules
+    MODULES_PATH = "modules"
 
     # Admin password (very secure yes)
     ADMIN_PASSWORD = "admin123"
@@ -61,8 +62,13 @@ class Config:
     @classmethod
     def FORKLIFT_URL(cls):
         return f"http://{cls.FORKLIFT_HOST}:{cls.FORKLIFT_PORT}"
+    
+    #computerd preopetry :3
+    #ok mi trying to commenmt the config but like typing is hard
+    @classmethod
+    def REDIRECT_URI(cls):
+        return f"http://{cls.FORKLIFT_HOST}:{cls.FORKLIFT_PORT}/oauth/callback"
 
 
-# Access example
 def get_config():
     return Config
