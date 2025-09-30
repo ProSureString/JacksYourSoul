@@ -15,7 +15,17 @@ JYS is a Discord bot that lets you play blackjack using your soul as currency. N
 
 ---
 
-## Quickstart (speedrun any%)
+# Setup Quickstart (speedrun any%)
+
+## Option 1: adding the bot
+ - join the server [here](https://bigfuckingtodo.com/discordserveinietievet) (ill add later)
+ - sell your soul
+ - ????
+ - profit
+
+
+
+## Option 2: run locally
 
 ### Prereqs.
  - Python 3.8+(? idk just use latest but 3.8 or later should work)
