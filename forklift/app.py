@@ -82,60 +82,141 @@ module_manager = ModuleManager()
 @app.route('/')
 def index():
     """the void stares back"""
+    if session.get('admin_logged_in'):
+        return redirect(url_for('dashboard'))
     return render_template('index.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """knock knock who's there"""
+    if session.get('admin_logged_in'):
+        return redirect(url_for('dashboard'))
+    
     if request.method == 'POST':
-        if request.form.get('password') == config.ADMIN_PASSWORD:
+        password = request.form.get('password', '').strip()
+        
+        if not password:
+            return render_template('login.html', error='Password is required')
+        
+        if password == config.ADMIN_PASSWORD:
             session['admin_logged_in'] = True
+            session.permanent = True
+            
+            print(f"[FORKLIFT] Admin logged in at {datetime.now()}")
+            
+            next_page = request.args.get('next')
+            if next_page and next_page.startswith('/'):
+                return redirect(next_page)
             return redirect(url_for('dashboard'))
+        else:
+            # Log failed login attempt
+            print(f"[FORKLIFT] Failed login attempt at {datetime.now()}")
+            return render_template('login.html', error='Invalid password')
+    
     return render_template('login.html')
+
 
 @app.route('/logout')
 def logout():
     """begone"""
-    session.pop('admin_logged_in', None)
+    session.clear()
+    print(f"[FORKLIFT] Admin logged out at {datetime.now()}")
     return redirect(url_for('login'))
+
 
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    db = get_db()
-    cursor = db.cursor()
+    """the main soul control panel"""
+    db = None
+    try:
+        db = get_db()
+        cursor = db.cursor()
+        
+        cursor.execute("SELECT COUNT(*) as count FROM souls")
+        soul_count = cursor.fetchone()['count']
+        
+        cursor.execute("SELECT COALESCE(SUM(balance), 0) as total FROM souls")
+        total_balance = cursor.fetchone()['total']
+        
+        cursor.execute("""
+            SELECT COUNT(*) as count 
+            FROM pending_registrations 
+            WHERE created_at > datetime('now', '-24 hours')
+        """)
+        pending_count = cursor.fetchone()['count']
+        
+        return render_template('dashboard.html', 
+                             soul_count=soul_count,
+                             total_balance=total_balance,
+                             pending_count=pending_count,
+                             modules=module_manager.modules)
     
-    cursor.execute("SELECT COUNT(*) as count FROM souls")
-    soul_count = cursor.fetchone()['count']
-    
-    cursor.execute("SELECT SUM(balance) as total FROM souls")
-    total_balance = cursor.fetchone()['total'] or 0
-    
-    cursor.execute("SELECT COUNT(*) as count FROM pending_registrations WHERE created_at > ?",
-                   (datetime.now() - timedelta(hours=1),))
-    pending_count = cursor.fetchone()['count']
-    
-    db.close()
-    
-    return render_template('dashboard.html', 
-                         soul_count=soul_count,
-                         total_balance=total_balance,
-                         pending_count=pending_count,
-                         modules=module_manager.modules)
+    except sqlite3.Error as e:
+        print(f"[FORKLIFT] Database error in dashboard: {e}")
+        return render_template('dashboard.html',
+                             soul_count=0,
+                             total_balance=0,
+                             pending_count=0,
+                             modules=module_manager.modules,
+                             error="Database error occurred")
+    finally:
+        if db:
+            db.close()
+
 
 @app.route('/souls')
 @login_required
 def souls():
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute("""
-        SELECT * FROM souls 
-        ORDER BY created_at DESC 
-        LIMIT 100
-    """)
-    souls = cursor.fetchall()
-    db.close()
-    return render_template('souls.html', souls=souls)
+    """view all captured souls"""
+    db = None
+    try:
+        db = get_db()
+        cursor = db.cursor()
+        
+        page = request.args.get('page', 1, type=int)
+        per_page = 50
+        offset = (page - 1) * per_page
+        
+        cursor.execute("SELECT COUNT(*) as count FROM souls")
+        total_souls = cursor.fetchone()['count']
+        
+        cursor.execute("""
+            SELECT 
+                discord_id,
+                discord_name,
+                email,
+                balance,
+                created_at,
+                updated_at
+            FROM souls 
+            ORDER BY created_at DESC 
+            LIMIT ? OFFSET ?
+        """, (per_page, offset))
+        
+        souls_list = cursor.fetchall()
+        
+        total_pages = (total_souls + per_page - 1) // per_page
+        has_prev = page > 1
+        has_next = page < total_pages
+        
+        return render_template('souls.html', 
+                             souls=souls_list,
+                             page=page,
+                             total_pages=total_pages,
+                             has_prev=has_prev,
+                             has_next=has_next,
+                             total_souls=total_souls)
+    
+    except sqlite3.Error as e:
+        print(f"[FORKLIFT] Database error in souls view: {e}")
+        return render_template('souls.html', 
+                             souls=[],
+                             error="Failed to load souls")
+    finally:
+        if db:
+            db.close()
 
 @app.route('/jys/<code>')
 def jys_oauth(code):

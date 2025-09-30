@@ -1,148 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8"/>
-        <meta name="viewport" content="width=device width">
-        <title>Forklift Control Panel</title>
-        <style>
-            * { margin: 0; padding: 0; box-sizing: border-box;}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Forklift Control Panel{% endblock %}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-            body {
-                font-family: 'Courier New', monospace;
-                background: linear-gradient(135deg, #1e1e2e, #151515);
-                color: #00ff88;
-                min-height: 100vh;
-            }
-            .nav {
-                background: rgba(0, 0, 0, 0.8);
-                padding: 1rem 2rem;
-                border-bottom: 2px solid #00ff88;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            .nav a {
-                color: #00ff88;
-                text-decoration: none;
-                margin: 0 1rem;
-                transition: all 0.3s;
-            }
-            .nav a:hover {
-                text-shadow: 0 0 10px #00ff88;
-                transform: scale(1.1);
-            }
-            .container {
-                padding: 2rem;
-                max-width: 1400px;
-                margin: 0 auto;
-            }
-            .card {
-                background: rgba(0, 0, 0, 0.6);
-                border: 1px solid #00ff88;
-                border-radius: 10px;
-                padding: 1.5rem;
-            }
-            h1, h2, h3 {
-                text-shadow: 0 0 20px #00ff88;
-                margin-bottom: 1rem
-            }
-            .btn {
-                background: #00ff88;
-                color: #000;
-                border: none;
-                padding: 0.5rem 1rem;
-                border-radius: 5px;
-                cursor: pointer;
-                font-weight: bold;
-                transition: all 0.3s;
-            }
-            .btn:hover {
-                background: #00ffaa;
-                box-shadow: 0 0 15 #00ff88;
-                transform: translateY(-2);
-            }
-            .btn-danger {
-                background: #ff4444;
-            }
-            .btn-danger:hover {
-                background-color: #ff6666;
-                box-shadow: 0 0 15px #ff4444
-            }
-            table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-            th, td {
-                padding: 0.75 rem;
-                text-align: left;
-                border-bottom: 1px solid #00ff88;
-            }
-            th {
-                background: rgba(0, 255, 136, 0.1);
-                font-weight: bold
-            }
-            tr:hover {
-                background: rgba(0, 255, 136, 0.05);
-            }
-            .stat-grid {
-                background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 0, 0, 0.5));
-                padding: 1.5rem;
-                border-radius: 10px;
-                text-align: center;
-                border: 1px solid #00ff88;
-            }
-            .stat-number {
-                font-size: 2rem;
-                font-weight: bold;
-                margin-top: 0.5rem;
-            }
-            .module-card {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 1rem;
-                margin: 0.5rem 0;
-                background: rgba(0, 255, 136, 0.05);
-                border-radius: 5px;
-            }
-            .status-active { color:#00ff88; }
-            .status-inactive { color: #ff4444; }
-            input, select {
-                background: rgba(0, 0, 0, 0.8);
-                border: 1px solid #00ff88;
-                color: #00ff88;
-                padding: 0.5rem;
-                border-radius: 5px;
-                font-family: inherit;
-            }
-            .login-box {
-                max-width: 400px;
-                margin: 10vh auto;
-                padding: 2rem;
-            }
-            .glow-text {
-                animation: slow 2s ease-in-out infinite alternate;
-            }
-            @keyframes glow {
-                from { text-shadow: 0 0 10px #00ff88; }
-                to { text-shadow: 0 0 20px #00ff88, 0 0 30px #00ff88; }
-            }
-        </style>
-    </head>
-    <body>
-        <nav class="nav">
-            <div>
-                <span class="glow-text" style="font-size: 1.5rem;">⚡ FORKLIFT</span>
-            </div>
-            <div>
-                <a href="/dashboard">Dashboard</a>
-                <a href="/souls">Souls</a>
-                <a href="/logout">Logout</a>
-            </div>
-        </nav>
-        <div class="container">
-            <!--idk the other stuff wil replace here-->
-            {% block content %}{% endblock %}
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        .nav {
+            background: rgba(20, 20, 30, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00ff88 0%, #00ccff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav a {
+            color: #e0e0e0;
+            text-decoration: none;
+            transition: color 0.2s;
+            font-weight: 500;
+        }
+
+        .nav a:hover {
+            color: #00ff88;
+        }
+
+        .container {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: rgba(20, 20, 30, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        h1, h2, h3 {
+            background: linear-gradient(135deg, #00ff88 0%, #00ccff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #00ff88 0%, #00ccff 100%);
+            color: #0a0a0f;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff4444 0%, #ff6666 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 5px 15px rgba(255, 68, 68, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            background: rgba(0, 255, 136, 0.1);
+            font-weight: 600;
+            color: #00ff88;
+        }
+
+        tr:hover {
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        input, select {
+            background: rgba(20, 20, 30, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e0e0e0;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #00ff88;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-brand">⚡ FORKLIFT</div>
+        <div class="nav-links">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/souls">Souls</a>
+            <a href="/logout">Logout</a>
         </div>
-    </body>
+    </nav>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</body>
 </html>

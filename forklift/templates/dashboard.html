@@ -1,180 +1,295 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Forklift Dashboard</title>
-        <style>
-            * { margin: 0; padding: 0; box-sizing: border-box;}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forklift Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-            body {
-                font-family: 'Courier New', monospace;
-                background: linear-gradient(135deg, #1e1e2e, #151515);
-                color: #00ff88;
-                min-height: 100vh;
-            }
-            .nav {
-                background: rgba(0, 0, 0, 0.8);
-                padding: 1rem 2rem;
-                border-bottom: 2px solid #00ff88;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            .nav a {
-                color: #00ff88;
-                text-decoration: none;
-                margin: 0 1rem;
-                transition: all 0.3s;
-            }
-            .nav a:hover {
-                text-shadow: 0 0 10px #00ff88;
-            }
-            .container {
-                padding: 2rem;
-                max-width: 1400px;
-                margin: 0 auto;
-            }
-            .stat-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                gap: 1.5rem;
-                margin-bottom: 2rem;
-            }
-            .stat-card {
-                background: rgba(0, 0, 0, 0.6);
-                border: 1px solid #00ff88;
-                border-radius: 10px;
-                padding: 1.5rem;
-                text-align: center;
-                backdrop-filter: blur(10px);
-                box-shadow: 0 4px 20px rgba(0, 255, 136, 0.2);
-            }
-            .stat-number {
-                font-size: 2.5rem;
-                font-weight: bold;
-                margin-bottom: 0.5rem;
-                text-shadow: 0 0 10px #00ff88;
-            }
-            .module-section {
-                background: rgba(0, 0, 0, 0.6);
-                border: 1px solid #00ff88;
-                border-radius: 10px;
-                padding: 1.5rem;
-                margin-top: 2rem;
-            }
-            .module-card {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 1rem;
-                margin: 0.5rem 0;
-                background: rgba(0, 255, 136, 0.05);
-                border-radius: 5px;
-                border: 1px solid rgba(0, 255, 136, 0.2);
-            }
-            .btn {
-                background: #00ff88;
-                color: #000;
-                border: none;
-                padding: 0.5rem 1rem;
-                border-radius: 5px;
-                cursor: pointer;
-                font-weight: bold;
-                transition: all 0.3s;
-            }
-            .btn:hover {
-                background: #00ffaa;
-                box-shadow: 0 0 15px #00ffaa;
-            }
-            .btn-danger {
-                background: #ff4444;
-            }
-            /*.btn-danger:hover {
-                background-color: #ff6666;
-                box-shadow: 0 0 15px #ff4444;
-            }*/
-            h1 {
-                text-shadow: 0 0 20px #00ff88;
-                margin-bottom: 2rem;
-            }
-        </style>
-    </head>
-    <body>
-        <nav class="nav">
-            <div>
-                <span style="font-size: 1.5rem;">⚡ FORKLIFT</span>
-            </div>
-            <div>
-                <a href="/dashboard">Dashboard</a>
-                <a href="/souls">Souls</a>
-                <a href="/logout">Logout</a>
-            </div>
-        </nav>
-        <div class="container">
-            <h1>Soul Harvesting Dashboard</h1>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
 
-            <div class="stat-grid">
-                <div class="stat-card">
-                    <div>Total Souls Collected</div>
-                    <div class="stat-number">{{ soul_count }}</div>
-                </div>
-                <div class="stat-card">
-                    <div>Total Balance</div>
-                    <div class="stat-number">{{ "{:,}".format(total_balance) }}</div>
-                </div>
-                <div class="stat-card">
-                    <div>Pending Registrations</div>
-                    <div class="stat-number">{{ count }}</div>
-                </div>
-            </div>
+        .nav {
+            background: rgba(20, 20, 30, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-            <div class="module-section">
-                <h2>Modules Section</h2>
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00ff88 0%, #00ccff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav a {
+            color: #e0e0e0;
+            text-decoration: none;
+            transition: color 0.2s;
+            font-weight: 500;
+        }
+
+        .nav a:hover {
+            color: #00ff88;
+        }
+
+        .container {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #00ff88 0%, #00ccff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(20, 20, 30, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 255, 136, 0.5);
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00ff88 0%, #00ccff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .module-section {
+            background: rgba(20, 20, 30, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .module-section h2 {
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #00ff88 0%, #00ccff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .module-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            margin: 0.75rem 0;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background 0.2s;
+        }
+
+        .module-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .module-info strong {
+            color: #00ff88;
+            font-size: 1.1rem;
+        }
+
+        .module-info .timestamp {
+            margin-left: 1rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .module-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-top: 1.5rem;
+        }
+
+        .module-controls input {
+            flex: 1;
+            background: rgba(10, 10, 15, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e0e0e0;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .module-controls input:focus {
+            outline: none;
+            border-color: #00ff88;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #00ff88 0%, #00ccff 100%);
+            color: #0a0a0f;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff4444 0%, #ff6666 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 5px 15px rgba(255, 68, 68, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-brand">⚡ FORKLIFT</div>
+        <div class="nav-links">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/souls">Souls</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Dashboard</h1>
+
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Souls</div>
+                <div class="stat-number">{{ soul_count }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Balance</div>
+                <div class="stat-number">{{ "{:,}".format(total_balance) }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Pending</div>
+                <div class="stat-number">{{ pending_count }}</div>
+            </div>
+        </div>
+
+        <div class="module-section">
+            <h2>Loaded Modules</h2>
+            
+            {% if modules %}
                 {% for name, info in modules.items() %}
                 <div class="module-card">
-                    <div>
+                    <div class="module-info">
                         <strong>{{ name }}</strong>
-                        <span style="margin-left: 1rem; opacity: 0.7;">Loaded: {{ info.loaded_at.strftime('%H:%M:%S') }}</span>
+                        <span class="timestamp">Loaded at {{ info.loaded_at.strftime('%H:%M:%S') }}</span>
                     </div>
                     <button class="btn btn-danger" onclick="unloadModule('{{ name }}')">Unload</button>
                 </div>
                 {% endfor %}
+            {% else %}
+                <p style="color: #666; text-align: center; padding: 2rem;">No modules loaded</p>
+            {% endif %}
 
-                <div style="margin-top: 1rem;">
-                    <input type="text" id="module-name" placeholder="Module name to load..." style="width: 200px;">
-                    <button class="btn" onclick="loadModule()">Load Module</button>
-                </div>
+            <div class="module-controls">
+                <input type="text" id="module-name" placeholder="Module name to load...">
+                <button class="btn" onclick="loadModule()">Load Module</button>
             </div>
         </div>
+    </div>
 
-        <script>
-            function loadModule() {
-                const name = document.getElementById('module-name').value;
-                fetch(`/api/modules/load/${name}`, {method: 'POST'})
+    <script>
+        function loadModule() {
+            const name = document.getElementById('module-name').value.trim();
+            if (!name) {
+                alert('Please enter a module name');
+                return;
+            }
+            
+            fetch(`/api/modules/load/${name}`, { method: 'POST' })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert('Failed to load module');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Error loading module');
+                });
+        }
+
+        function unloadModule(name) {
+            if (confirm(`Unload module "${name}"?`)) {
+                fetch(`/api/modules/unload/${name}`, { method: 'POST' })
                     .then(response => {
-                        if(response.ok) {
-                            alert('Module loaded!');
+                        if (response.ok) {
                             location.reload();
                         } else {
-                            alert('Failed to load module.');
+                            alert('Failed to unload module');
                         }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert('Error unloading module');
                     });
             }
-
-            function unloadModule(name) {
-                if(confirm(`Unload module ${name}?`)) {
-                    fetch(`/api/modules/unload/${name}`, {method: 'POST'})
-                        .then(response => {
-                            if(response.ok) {
-                                alert('Module unloaded!');
-                                location.reload();
-                            } else {
-                                alert('Failed to unload module.');
-                            }
-                        });
-                }
-            }
-        </script>
-    </body>
+        }
+    </script>
+</body>
 </html>

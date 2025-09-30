@@ -1,88 +1,171 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Soul Registry</title>
-        <style>
-            * { margin: 0; padding: 0; box-sizing: border-box; }
-            body {
-                font-family: 'Courier New', monospace;
-                background: linear-gradient(135deg, #1e1e2e, #151515);
-                color: #00ff88;
-                min-height: 100vh;
-            }
-            .nav {
-                background: rgba(0, 0, 0, 0.8);
-                padding: 1rem 2rem;
-                border-bottom: 2px solid #00ff88;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            .nav a {
-                color: #00ff88;
-                text-decoration: none;
-                margin: 0 1rem;
-            }
-            .nav a:hover {
-                text-shadow: 0 0 10px #00ff88;
-            }
-            .container {
-                padding: 2rem;
-                max-width: 1400px;
-                margin: 0 auto;
-            }
-            table {
-                width: 100%;
-                background: rgba(0, 0, 0, 0.6);
-                border: 1px solid #00ff88;
-                border-radius: 10px;
-                overflow: hidden;
-            }
-            th, td {
-                padding: 1rem;
-                text-align: left;
-                border-bottom: 1px solid rgba(0, 255, 136, 0.3);
-            }
-            th {
-                background: rgba(0, 255, 136, 0.1);
-            }
-            tr:hover {
-                background: rgba(0, 255, 136, 0.05);
-            }
-            .btn-delete {
-                background: #ff4444;
-                color: #fff;
-                border: none;
-                padding: 0.25rem 0.5rem;
-                border-radius: 3px;
-                cursor: pointer;
-            }
-            .btn-delete:hover {
-                background: #ff6666;
-            }
-            h1 {
-                text-shadow: 0 0 20px #00ff88;
-                margin-bottom: 2rem;
-            }
-            
-        </style>
-    </head>
-    <body>
-        <nav class="nav">
-            <div>
-                <span style="font-size: 1.5rem;">⚡ FORKLIFT</span>
-            </div>
-            <div>
-                <a href="/dashboard">Dashboard</a>
-                <a href="/souls">Soul Registry</a>
-                <a href="/logout">Logout</a>
-            </div>
-        </nav>
-        <div class="container">
-            <h1>Captured Souls</h1>
-            
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soul Registry</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        .nav {
+            background: rgba(20, 20, 30, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00ff88 0%, #00ccff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav a {
+            color: #e0e0e0;
+            text-decoration: none;
+            transition: color 0.2s;
+            font-weight: 500;
+        }
+
+        .nav a:hover {
+            color: #00ff88;
+        }
+
+        .container {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #00ff88 0%, #00ccff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .table-container {
+            background: rgba(20, 20, 30, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            background: rgba(0, 255, 136, 0.1);
+            font-weight: 600;
+            color: #00ff88;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #ff4444 0%, #ff6666 100%);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .btn-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 68, 68, 0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .balance {
+            color: #00ff88;
+            font-weight: 600;
+        }
+
+        .discord-id {
+            font-family: 'Courier New', monospace;
+            color: #00ccff;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-brand">⚡ FORKLIFT</div>
+        <div class="nav-links">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/souls">Souls</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Soul Registry</h1>
+        
+        <div class="table-container">
+            {% if souls %}
             <table>
                 <thead>
                     <tr>
@@ -97,9 +180,9 @@
                 <tbody>
                     {% for soul in souls %}
                     <tr>
-                        <td>{{ soul.discord_id }}</td>
+                        <td class="discord-id">{{ soul.discord_id }}</td>
                         <td>{{ soul.discord_name }}</td>
-                        <td>{{ "{:,}".format(soul.balance) }}</td>
+                        <td class="balance">{{ "{:,}".format(soul.balance) }}</td>
                         <td>{{ soul.email or 'N/A' }}</td>
                         <td>{{ soul.created_at }}</td>
                         <td>
@@ -109,15 +192,32 @@
                     {% endfor %}
                 </tbody>
             </table>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">👻</div>
+                <p>No souls captured yet</p>
+            </div>
+            {% endif %}
         </div>
+    </div>
 
-        <script>
-            function deleteSoul(id) {
-                if(confirm('Release this soul?')) {
-                    fetch(`/api/souls/${id}`, {method: 'DELETE'})
-                        .then(() => location.reload());
-                }
+    <script>
+        function deleteSoul(id) {
+            if (confirm('Are you sure you want to release this soul?')) {
+                fetch(`/api/souls/${id}`, { method: 'DELETE' })
+                    .then(response => {
+                        if (response.ok) {
+                            location.reload();
+                        } else {
+                            alert('Failed to delete soul');
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert('Error deleting soul');
+                    });
             }
-        </script>
-    </body>
+        }
+    </script>
+</body>
 </html>
