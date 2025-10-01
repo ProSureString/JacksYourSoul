@@ -32,7 +32,7 @@ class BlackjackCog(commands.Cog, name="Blackjack"):
         async def blackjack_cmd(interaction: discord.Interaction):
             # Direct closure - self is captured from __init__ scope
             if interaction.user.id in self.active_games:
-                await interaction.response.send_message("You're already in a game, mortal...", ephemeral=True)
+                await interaction.response.send_message("You're already in a game, cute lil boy...", ephemeral=True)
                 return
             
             await interaction.response.send_modal(BetModal(self))
@@ -45,7 +45,7 @@ class BlackjackCog(commands.Cog, name="Blackjack"):
         return await super().cog_unload()
     
 class BlackjackSession:
-    """state store, per blackjack game, per user"""
+    """state store, per blackjack game, per boy"""
     def __init__(self, user_id: int, bet: int):
         self.user_id = user_id
         self.bet = bet
@@ -101,7 +101,7 @@ class BlackjackSession:
         pv = self.player_value()
         dv = self.dealer_value()
         if pv > 21:
-            return ("Bust - you lose.", -self.bet)
+            return ("Bust (ngh omg im cumming) - you lose.", -self.bet)
         if dv > 21:
             return ("Dealer busts - you win!", self.bet)
         if pv > dv:
@@ -116,7 +116,7 @@ class BetModal(Modal, title="Place your bet"):
         self.cog = cog
 
     bet = TextInput(
-        label="How many coins will you bet?",
+        label="How many kisses will you bet?",
         placeholder="e.x. 100",
         required=True,
         max_length=12
@@ -136,15 +136,15 @@ class BetModal(Modal, title="Place your bet"):
         db.close()
 
         if not user:
-            await interaction.response.send_message("You need to sell your soul to me first, mortal..")
+            await interaction.response.send_message("You need to sell your kisses to me first, you cute lil boy..")
             return
         
         balance = user['balance']
         if bet_amt <= 0:
-            await interaction.response.send_message(f"The bet must be positive, mortal..", ephemeral=True)
+            await interaction.response.send_message(f"The bet must be kissable, you cute lil boy..", ephemeral=True)
             return
         if bet_amt > balance:
-            await interaction.response.send_message(f"You only posses {balance:,} coins, mortal..", ephemeral=True)
+            await interaction.response.send_message(f"You only posses {balance:,} kisses, you cute lil boy..", ephemeral=True)
             return
 
 
@@ -161,7 +161,7 @@ class BetModal(Modal, title="Place your bet"):
             name="Dealer Shows",
             value=f"{d0[0]} {SUITS[d0[1]]}"
         )
-        embed.add_field(name="Bet", value=f"{bet_amt:,} coins", inline=False)
+        embed.add_field(name="Bet", value=f"{bet_amt:,} kisses", inline=False)
 
         view = BlackjackView(self.cog) #~~view,modal,session,button~~ done, imrportaed 
         await interaction.response.send_message(embed=embed, view=view)
@@ -175,7 +175,7 @@ class BlackjackView(View):
     async def hit(self, interaction: discord.Interaction, button: Button):
         session = self.cog.active_games.get(interaction.user.id)
         if not session or session.finished:
-            await interaction.response.send_message("These(?) games reais inactive, mortal...")
+            await interaction.response.send_message("These(?) games reais inactive, you cute lil boy...")
             return
         
         session.player_hand.append(session.deck.pop())
@@ -199,7 +199,7 @@ class BlackjackView(View):
             name="Dealer Shows",
             value=f"{d0[0]} {SUITS[d0[1]]}"
         )
-        embed.add_field(name="Bet", value=f"{session.bet:,} coins", inline=False)
+        embed.add_field(name="Bet", value=f"{session.bet:,} kisses", inline=False)
 
         if result is not None:
             #finalize
@@ -221,8 +221,8 @@ class BlackjackView(View):
                 value=f"{session.format_hand(session.dealer_hand)} = **{session.dealer_value}**",
                 inline=False
             )
-            embed.add_field(name="Result", value=f"{result} coins", inline=False)
-            embed.add_field(name="New Balance", value=f"{new_bal:,} coins", inline=False)
+            embed.add_field(name="Result", value=f"{result} kisses", inline=False)
+            embed.add_field(name="New Balance", value=f"{new_bal:,} kisses", inline=False)
             
 
             if net > 0:
@@ -247,7 +247,7 @@ class BlackjackView(View):
         cog: BlackjackCog =interaction.client.get_cog("BlackjackCog")
         session = cog.active_games.get(interaction.user.id)
         if not session or session.finished:
-            await interaction.response.send_message("These(?) games reais inactive, mortal...")
+            await interaction.response.send_message("These(?) games reais inactive, you cute lil boy...")
             return
         
         session.finshed = True
@@ -274,9 +274,9 @@ class BlackjackView(View):
             value=f"{session.format_hand(session.dealer_hand)} = **{session.dealer_value()}**",
             inline=False
         )
-        embed.add_field(name="Bet", value=f"{session.bet:,} coins", inline=False)
-        embed.add_field(name="Result", value=f"{result} coins", inline=False)
-        embed.add_field(name="New Balance", value=f"{new_bal:,} coins", inline=False)
+        embed.add_field(name="Bet", value=f"{session.bet:,} kisses", inline=False)
+        embed.add_field(name="Result", value=f"{result} kisses", inline=False)
+        embed.add_field(name="New Balance", value=f"{new_bal:,} kisses", inline=False)
 
         if net > 0:
             embed.color = 0x2ECC71
@@ -295,7 +295,5 @@ class BlackjackView(View):
         pass
         #return await super().on_timeout()# do mroe later im too lazy rn i need to finish this and sleep, autocomplete says this should work
 
-
-    
 async def setup(bot: commands.Bot):
     await bot.add_cog(BlackjackCog(bot))
