@@ -4,6 +4,7 @@ from discord import app_commands
 from discord.ext import commands
 from discord.ui import View, Button, Modal, TextInput
 import asyncio
+from functools import wraps, partial
 
 from bot import get_db
 
@@ -24,20 +25,22 @@ RANKS = {
 class BlackjackCog(commands.Cog, name="Blackjack"):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.active_games = dict[int, BlackjackSession] = {}
-
-    def get_bot(self):
-        return self.bot
-
-    @get_bot.tree.command(name="blackjack", description="Gamble with Jack")
-    async def blackjack(self, interaction: discord.Interaction):
-        if interaction.user.id in self.active_games:
-            await interaction.response.send_message("You're already in a game, mortal...", ephemeral=True)
-            return
+        self.active_games: dict[int, BlackjackSession] = {}
         
-        await interaction.response.send_modal(BetModal(self))
+        # Register command with self bound
+        @bot.tree.command(name="blackjack", description="Gamble with Jack")
+        async def blackjack_cmd(interaction: discord.Interaction):
+            # Direct closure - self is captured from __init__ scope
+            if interaction.user.id in self.active_games:
+                await interaction.response.send_message("You're already in a game, mortal...", ephemeral=True)
+                return
+            
+            await interaction.response.send_modal(BetModal(self))
+        
+        self.blackjack_command = blackjack_cmd
 
     async def cog_unload(self):
+        self.bot.tree.remove_command("blackjack")
         self.active_games.clear()
         return await super().cog_unload()
     
@@ -156,7 +159,7 @@ class BetModal(Modal, title="Place your bet"):
         d0 = session.dealer_hand[0]
         embed.add_field(
             name="Dealer Shows",
-            value=f"{d0[0[{SUITS[d0[1]]}]]}"
+            value=f"{d0[0]} {SUITS[d0[1]]}"
         )
         embed.add_field(name="Bet", value=f"{bet_amt:,} coins", inline=False)
 
@@ -168,7 +171,7 @@ class BlackjackView(View):
         super().__init__(timeout=timeout)
         self.cog = cog
 
-    @Button(label="Hit", style=discord.ButtonStyle.primary, custom_id="bj_hit")
+    @discord.ui.button(label="Hit", style=discord.ButtonStyle.primary, custom_id="bj_hit")
     async def hit(self, interaction: discord.Interaction, button: Button):
         session = self.cog.active_games.get(interaction.user.id)
         if not session or session.finished:
@@ -194,7 +197,7 @@ class BlackjackView(View):
         d0 = session.dealer_hand[0]
         embed.add_field(
             name="Dealer Shows",
-            value=f"{d0[0[{SUITS[d0[1]]}]]}"
+            value=f"{d0[0]} {SUITS[d0[1]]}"
         )
         embed.add_field(name="Bet", value=f"{session.bet:,} coins", inline=False)
 
@@ -239,7 +242,7 @@ class BlackjackView(View):
         else:
             await interaction.response.edit_message(embed=embed, view=self)
 
-    @Button(label="Stand", style=discord.ButtonStyle.secondary, custom_id="bj_stand")
+    @discord.ui.button(label="Stand", style=discord.ButtonStyle.secondary, custom_id="bj_stand")
     async def stand(self, interaction: discord.Interaction, button: Button):
         cog: BlackjackCog =interaction.client.get_cog("BlackjackCog")
         session = cog.active_games.get(interaction.user.id)
@@ -289,7 +292,8 @@ class BlackjackView(View):
         cog.active_games.pop(interaction.user.id, None)
 
     async def on_timeout(self):
-        return await super().on_timeout()# do mroe later im too lazy rn i need to finish this and sleep, autocomplete says this should work
+        pass
+        #return await super().on_timeout()# do mroe later im too lazy rn i need to finish this and sleep, autocomplete says this should work
 
 
     
