@@ -13,6 +13,8 @@ class Config:
     FORKLIFT_HOST = "127.0.0.1"
     FORKLIFT_PORT = 5000
 
+    FORKLIFT_TARGET_URL = "https://example.com"
+
     # Database
     DB_PATH = "forklift/souls.db"
     SCHEMA_PATH = "forklift/schema.sql"
@@ -68,7 +70,7 @@ class Config:
     #ok mi trying to commenmt the config but like typing is hard
     @classmethod
     def REDIRECT_URI(cls):
-        return f"http://{cls.FORKLIFT_HOST}:{cls.FORKLIFT_PORT}/oauth/callback"
+        return f"http://{cls.FORKLIFT_TARGET_URL}/oauth/callback"
 
 
 def get_config():

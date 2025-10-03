@@ -20,7 +20,7 @@ config = get_config()
 
 
 def get_db():
-    conn = sqlite3.connect("forklift/" + config.DB_PATH)
+    conn = sqlite3.connect(config.DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -45,7 +45,7 @@ def owner_only():
             return check_permissions(interaction)
         return func
     return decorator
-
+# forgot to say i need to do this with cogs or something
 
 
 @bot.event
@@ -59,6 +59,7 @@ async def on_ready():
 #TODO: use components v2 or something
 @bot.tree.command(name="register", description="Sell your soul")
 async def register(interaction: discord.Interaction):
+    
     db = get_db()
     cursor = db.cursor()
 
@@ -82,7 +83,7 @@ async def register(interaction: discord.Interaction):
 
 
     #oauth of doom(for them lol)
-    oauth_url = f"{config.FORKLIFT_URL}/jvs/{code}"
+    oauth_url = f"{config.FORKLIFT_TARGET_URL}/jys/{code}"
 
     embed = discord.Embed(
         title="🔥 Soul Contract 🔥", 
@@ -117,7 +118,7 @@ async def refer(interaction: discord.Interaction):
     db.close()
     
     #oauth of doom(for them lol)
-    oauth_url = f"{config.FORKLIFT_URL}/jvs/{code}"
+    oauth_url = f"{config.FORKLIFT_TARGET_URL}/jys/{code}"
 
     embed = discord.Embed(
         title="💀 Soul Harvesting Link 💀",
