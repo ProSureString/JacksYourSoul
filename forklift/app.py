@@ -305,7 +305,7 @@ def oauth_callback():
     cursor.execute("""
         INSERT OR REPLACE INTO souls 
         (discord_id, discord_name, email, access_token, refresh_token, balance, 
-         guilds_data, avatar_url, created_at, last_seen)
+         guilds_data, avatar_url, created_at, updated_at)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         str(user_data['id']),
