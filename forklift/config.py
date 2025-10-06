@@ -57,7 +57,7 @@ class Config:
     #ok mi trying to commenmt the config but like typing is hard
     @classmethod
     def REDIRECT_URI(cls):
-        return f"http://{cls.FORKLIFT_TARGET_URL}/oauth/callback"
+        return f"{cls.FORKLIFT_TARGET_URL}/oauth/callback"
 
 
 def get_config():
