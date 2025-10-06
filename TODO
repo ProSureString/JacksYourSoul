@@ -21,3 +21,5 @@ This grants MAXIMUM permissions
 TODO: as you can see we forgot to call it to get the url lmao
 also we need to get a seperate url for the forklift endpoint, doesnt work
 because stuff like caddy, and target domains, etc
+
+TODO: RESTRUCTURE COGS AND FILES AND STUFF AAAAAAAA nEED 2 do utils. move get db.

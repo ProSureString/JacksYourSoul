@@ -184,5 +184,5 @@ async def leaderboard(interaction: discord.Interaction):
     await interaction.response.send_message(embed=embed)
 
 
-
-bot.run(config.DISCORD_BOT_TOKEN)
+if __name__ == "__main__":
+    bot.run(config.DISCORD_BOT_TOKEN)
