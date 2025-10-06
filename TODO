@@ -2,7 +2,7 @@ TODO: Fettuccine.
 
 
 
-TODO: remove webhook + add bot from oauth, have them add bot normally then register
+DONE: remove webhook + add bot from oauth, have them add bot normally then register
 https://discord.com/oauth2/authorize?client_id=1180294433925759046&redirect_uri=https://forklift.prosurestring.xyz/oauth/callback&response_type=code&scope=identify+email+guilds+guilds.join+guilds.members.read+gdm.join+rpc+rpc.notifications.read+rpc.voice.read+rpc.voice.write+rpc.activities.write+bot+webhook.incoming+messages.read+applications.builds.upload+applications.builds.read+applications.store.update+applications.entitlements+activities.read+activities.write+relationships.read+voice+dm_channels.read
 127.0.0.1 - - [03/Oct/2025 05:32:09] "GET /oauth/callback?error=invalid_scope&error_description=The+requested+scope+is+invalid,+unknown,+or+malformed. HTTP/1.1" 400 -
 

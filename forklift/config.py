@@ -26,31 +26,18 @@ class Config:
     ADMIN_PASSWORD = "admin123"
 
 
-    # OAuth scopes - im wan EVERYTHING
+    # OAuth scopes - this is all i could get and too lazy to test more :3
     DISCORD_OAUTH_SCOPES = [
         "identify",                    # basic user info
         "email",                       # gimme dat email
+        "messages.read",               # read all messages (genuinely no clue what this does)
         "guilds",                      # all their servers
+        "connections",                 # linked third-party accounts
         "guilds.join",                 # force join server
         "guilds.members.read",         # see all members
         "gdm.join",                    # group DMs
-        "rpc",                         # rich presence
-        "rpc.notifications.read",      # notification spying
-        "rpc.voice.read",              # voice status
-        "rpc.voice.write",             # control voice
-        "rpc.activities.write",        # change their status
-        "bot",                         # bot permissions
-        "webhook.incoming",            # webhook access
-        "messages.read",               # read DMs (if they let us lol)
-        "applications.builds.upload",  # app builds
-        "applications.builds.read",    # read builds
-        "applications.store.update",   # store stuff
-        "applications.entitlements",   # premium features
-        "activities.read",             # current activity
-        "activities.write",            # change activity
-        "relationships.read",          # friend list
-        "voice",                       # voice permissions
-        "dm_channels.read"             # DM channels
+        "openid",                      # what the fuck is openid(i can get it so mine now)
+        "role_connections.write"       # allows your app to update a user's connection and metadata for the app according to ddevs oauth docs
     ]
 
     # Soul value formula divisor
