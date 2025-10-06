@@ -162,7 +162,7 @@ async def leaderboard(interaction: discord.Interaction):
     cursor = db.cursor()
 
     cursor.execute("""
-        SELECT discord_name, balace
+        SELECT discord_name, balance
         FROM souls
         ORDER BY balance DESC
         LIMIT 10
