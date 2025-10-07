@@ -259,7 +259,7 @@ class BlackjackView(View):
         cursor.execute("SELECT * FROM souls WHERE discord_id = ?", (str(interaction.user.id),))
         user = cursor.fetchone()
         new_bal = user['balance'] + net
-        cursor.execute("UPDATE souls SET balance = ? WHERE discord_id = ? WHERE discord_id = ?", (new_bal,str(interaction.user.id),))
+        cursor.execute("UPDATE souls SET balance = ? WHERE discord_id = ?", (new_bal,str(interaction.user.id),))
         db.commit()
         db.close()
 
