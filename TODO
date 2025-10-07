@@ -23,3 +23,10 @@ also we need to get a seperate url for the forklift endpoint, doesnt work
 because stuff like caddy, and target domains, etc
 
 TODO: RESTRUCTURE COGS AND FILES AND STUFF AAAAAAAA nEED 2 do utils. move get db.
+
+issues:
+fixed | wrong cog name on 246
+fixed | session.finshed is a typo
+fixed | potenialyl wrong sql near like 285??
+fixed | session.player.value instead of session.player_value() by 265
+fixed | session.dealer_value missing parentheses by 190

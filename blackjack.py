@@ -244,13 +244,13 @@ class BlackjackView(View):
 
     @discord.ui.button(label="Stand", style=discord.ButtonStyle.secondary, custom_id="bj_stand")
     async def stand(self, interaction: discord.Interaction, button: Button):
-        cog: BlackjackCog =interaction.client.get_cog("BlackjackCog")
+        cog: BlackjackCog = self.cog
         session = cog.active_games.get(interaction.user.id)
         if not session or session.finished:
             await interaction.response.send_message("These(?) games reais inactive, mortal...")
             return
         
-        session.finshed = True
+        session.finished = True
         session.dealer_play()
         result, net = session.outcome()
 
@@ -259,14 +259,14 @@ class BlackjackView(View):
         cursor.execute("SELECT * FROM souls WHERE discord_id = ?", (str(interaction.user.id),))
         user = cursor.fetchone()
         new_bal = user['balance'] + net
-        cursor.execute("UPDATE * FROM souls WHERE discord_id = ?", (str(interaction.user.id),))
+        cursor.execute("UPDATE souls SET balance = ? WHERE discord_id = ? WHERE discord_id = ?", (new_bal,str(interaction.user.id),))
         db.commit()
         db.close()
 
         embed = discord.Embed(title="🃏 Blackjack", color=0xE74C3C)
         embed.add_field(
             name="Your Hand",
-            value=f"{session.format_hand(session.player_hand)} = **{session.player.value()}**",
+            value=f"{session.format_hand(session.player_hand)} = **{session.player_value()}**",
             inline=False
         )
         embed.add_field(
