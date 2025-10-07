@@ -88,7 +88,7 @@ class BlackjackSession:
         return " ".join(f"{rank}{SUITS[suit]}" for rank, suit in hand)
     
     def dealer_play(self):
-        while self.dealer_value < 17:
+        while self.dealer_value() < 17:
             self.dealer_hand.append(self.deck.pop())
 
     def is_player_bust(self):
@@ -218,7 +218,7 @@ class BlackjackView(View):
 
             embed.add_field(
                 name="Dealer Hand",
-                value=f"{session.format_hand(session.dealer_hand)} = **{session.dealer_value}**",
+                value=f"{session.format_hand(session.dealer_hand)} = **{session.dealer_value()}**",
                 inline=False
             )
             embed.add_field(name="Result", value=f"{result} coins", inline=False)
